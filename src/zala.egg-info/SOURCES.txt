@@ -1,0 +1,8 @@
+README.md
+setup.py
+src/zala.py
+src/zala.egg-info/PKG-INFO
+src/zala.egg-info/SOURCES.txt
+src/zala.egg-info/dependency_links.txt
+src/zala.egg-info/requires.txt
+src/zala.egg-info/top_level.txt

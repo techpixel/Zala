@@ -1,0 +1,3 @@
+import importtest
+
+importtest.test.test();

@@ -1,0 +1,15 @@
+class myClass {
+  myAttribute is "myAttribute";
+  def myFunc() {
+    return "myFunc";
+  }
+  class myOtherClass {
+    def myOtherFunc() {
+      return "myOtherFunc";
+    }
+  }
+}
+
+print(myClass.myAttribute);
+print(myClass.myFunc());
+print(myClass.myOtherClass.myOtherFunc());

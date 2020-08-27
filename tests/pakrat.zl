@@ -1,0 +1,14 @@
+import pakrat
+
+#
+# PakRat is the package manager for Zala.
+#
+
+pakrat.import("hello_world");
+
+hello_world.helloworld(); #prints "Hello World!"
+
+pakrat.import("factorial");
+
+myfactorial is factorial.factorial(5);
+print(myfactorial);

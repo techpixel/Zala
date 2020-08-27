@@ -1,0 +1,7 @@
+import request
+
+mygetrequest is request.get('https://google.com/');
+mypostrequest is request.post('https://google.com/');
+
+print(mygetrequest["status"]);
+print(mypostrequest["status"]);

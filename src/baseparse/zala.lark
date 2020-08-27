@@ -1,0 +1,230 @@
+// Basic Value Regex
+
+NUMBER : /[0-9]+/
+FLOAT : /[0-9]+\.[0-9]+/
+WORD : /[a-zA-Z][a-zA-Z0-9_]*/
+VOID : "void"
+
+// String Regex
+
+_STRING_INNER: /.*?/
+_STRING_ESC_INNER: _STRING_INNER /(?<!\\)(\\\\)*?/ 
+
+ESCAPED_STRING : ("\"" _STRING_ESC_INNER "\"" | "'" _STRING_ESC_INNER "'")
+
+// Rules
+
+//
+// Basic Program Reading
+//
+
+start : program*
+
+?program : func ";"
+         | func_def (";")?
+         | var_assign ";"
+         | class_def (";")?
+         | importfunc (";")?
+         | iffunc (";")?
+         | basicloop (";")?
+         | iteratorloop (";")?
+         | relexprloop (";")?
+         | expr ";"
+         | value ";"
+
+// Imports and Pakrat Functionality
+
+importfunc : "import" WORD
+
+// 
+// Looping and Iterators
+//
+
+basicloop : "loop" NUMBER "{" loop_block_items "}"
+iteratorloop : "iterate" _iterators "with" WORD "{" loop_block_items "}"
+relexprloop : "while" _ifobj "{" loop_block_items "}"
+
+loop_block_items : loop_block_item*
+
+loop_block_item : func ";"
+                | func_def (";")?
+                | var_assign ";"
+                | class_def (";")?
+                | importfunc (";")?
+                | iffuncloop (";")?
+                | basicloop (";")?
+                | iteratorloop (";")?
+                | expr ";"
+                | value ";"
+                | breaker
+
+breaker : "break" ";"
+
+_iterators : listrule
+           | dictionary
+           | _exprvar
+
+//
+// RelExpr, LogiExpr and Booleans
+//
+
+TRUE : "true"
+FALSE : "false"
+
+relexpr : _relitem ">" _relitem -> gt
+        | _relitem ">=" _relitem -> ge
+        | _relitem "<" _relitem -> lt
+        | _relitem "=<" _relitem -> le
+        | relvalue "=" relvalue -> eq
+        | relvalue "!=" relvalue -> neq
+
+logiexpr : _ifobj "or" _ifobj -> logi_or
+         | _ifobj "and" _ifobj -> logi_and
+         | "not" _ifobj -> logi_not
+
+_relitem : _exprvar
+        | expr
+        | "(" relexpr ")"
+
+iffunc : "if" _ifobj "{" program* "}" (elsefunc)?
+iffuncloop : "if" _ifobj "{" loop_block_items "}" (elsefuncloop)?
+iffuncdef : "if" _ifobj "{" def_block "}" (elsefuncdef)?
+
+elsefunc : "else" "{" program* "}"
+elsefuncloop : "else" "{" loop_block_items "}"
+elsefuncdef : "else" "{" def_block "}"
+
+_ifobj : relexpr
+       | logiexpr
+       | func
+       | navigator
+       | TRUE
+       | FALSE
+       | VOID
+       | WORD
+
+
+//
+// Functions and Variables (OOP)
+//
+
+// Variables
+
+var_assign : WORD "is" value
+           | navigator "is" value
+
+// Functions
+
+func_def : "def" WORD defparams "{" def_block "}"
+func : _calltypes params
+
+params : "(" (argslist)? ("," argslist)* ")"
+defparams : "(" (defargslist)? ("," defargslist)* ")"
+
+argslist : value -> arg
+         | WORD "=" value -> kwarg
+defargslist : WORD -> defarg
+         | WORD "=" value -> defkwarg
+
+def_block : def_block_items*
+def_block_items : def_block_item
+
+def_block_item : func ";"
+               | func_def (";")?
+               | var_assign ";"
+               | class_def (";")?
+               | importfunc (";")?
+               | iffuncdef (";")?
+               | basicloop (";")?
+               | iteratorloop (";")?
+               | relexprloop (";")?
+               | expr ";"
+               | value ";"
+               | returner ";"
+  
+returner : "return" value
+
+// Classes
+
+class_def : "class" WORD "{" class_block "}"
+
+class_block : class_block_items*
+class_block_items : class_block_item
+
+class_block_item : var_assign ";"
+                 | func_def
+                 | class_def
+
+// Both
+
+_exprvar : WORD
+         | func
+         | navigator
+
+_calltypes : WORD
+           | navigator
+
+navigator : (WORD ".")+ WORD
+
+//
+// Values
+//
+
+// for relexpr
+relvalue : expr
+         | WORD indexers?
+         | ESCAPED_STRING indexers?
+         | func indexers?
+         | navigator indexers?
+         | listrule indexers?
+         | dictionary indexers?
+         | TRUE
+         | FALSE
+         | VOID
+         | "(" relexpr ")"
+         | "(" logiexpr ")"
+
+value : expr
+      | WORD indexers?
+      | ESCAPED_STRING indexers?
+      | func indexers?
+      | navigator indexers?
+      | listrule indexers?
+      | dictionary indexers?
+      | TRUE
+      | FALSE
+      | VOID
+      | relexpr
+
+_indexable_values : WORD
+                  | ESCAPED_STRING
+                  | navigator
+                  | NUMBER
+
+listrule : "[" value ("," value)* "]"
+dictionary : "{" ESCAPED_STRING ":" value ("," ESCAPED_STRING ":" value)* "}"
+
+indexers: _index+
+_index : "[" _indexable_values "]"
+
+//
+// Binary And Unary Operators
+//
+
+?expr : term
+      | (expr | _exprvar) "+" (term | _exprvar) -> add
+      | (expr | _exprvar) "-" (term | _exprvar) -> sub
+
+?term : factor
+      | (term | _exprvar) "*" (factor | _exprvar) -> mul
+      | (term | _exprvar) "/" (factor | _exprvar) -> div
+
+?factor : NUMBER
+        | FLOAT
+        | "-" (factor | _exprvar) -> neg
+        | factor "^" factor -> pow
+        | "(" expr ")"
+
+%ignore " "
+%ignore "\n"
+%ignore /#.*/

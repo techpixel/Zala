@@ -1,0 +1,17 @@
+import randnum
+
+mynumber is randnum.randint(0, 100);
+
+while true {
+  yournumber is int(input("Guess My Number:"));
+  if yournumber > mynumber {
+    print("Too High!");
+  }
+  if yournumber < mynumber {
+    print("Too Low!");
+  }
+  if yournumber = mynumber {
+    print("You Win!");
+    break;
+  }
+}

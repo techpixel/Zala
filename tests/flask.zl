@@ -1,0 +1,22 @@
+import flasklib
+
+flasklib.app();
+
+#
+# Simple Flask Program
+#
+
+class myWebApp {
+  def hello_world() {
+    return "Hello World!";
+  }
+  def hello_john() {
+    return "Hello John!";
+  }
+}
+
+flasklib.connect(myWebApp.hello_world, "/");
+flasklib.connect(myWebApp.hello_john, "/john");
+
+flasklib.setup(myWebApp);
+flasklib.start();
