@@ -4,7 +4,7 @@
 
 Pakrat [Website](https://Pakrat.teamzala.repl.co)
 Pakrat [Source](https://repl.it/@TeamZala/Pakrat#templates/packagedesc.html)
-Zala Evalution Runner Not Ready Yet
+Zala [Evalution Runner](https://evaluation-server.harperframeinc.repl.co/)
 Github Not ready yet.
 ___
 

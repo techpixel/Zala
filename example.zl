@@ -1,8 +1,0 @@
-class customobj {
-  myvar is 5;
-  def run(obj) {
-    print(obj.myvar);
-  }
-}
-
-myobj is customobj();
