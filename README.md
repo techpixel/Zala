@@ -1,4 +1,5 @@
 # Welcome to Zala's Manual
+## Notice: This repository (Zala) is archived, with no future plans. 
 ___
 
 Welcome to Zala!
